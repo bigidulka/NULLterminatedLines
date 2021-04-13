@@ -6,14 +6,14 @@ using namespace std;
 int StrLen(char str[]);
 void to_upper(char str[]);
 void to_lower(char str[]);
-//void shrink(char str[], const int n); // удаляет пробелы из предложения
+void shrink(char str[], const int n); // удаляет пробелы из предложения
 bool is_palindrome(char str[], const int n);	//Определяет, является ли строка палиндромом
 bool is_int_number(char str[]);	//Определяет, является ли строка целым числом
 int  to_int_number(char str[]);	//Если строка является целым числом, то возвращает его числовое значение
 bool is_bin_number(char str[]);	//Проверяет, является ли строка двоичным числом
 int  bin_to_dec(char str[]);	//Если строка является двоичным числом, возвращает его десятичное значение
 bool is_hex_number(char str[]);	//Проверяет, является ли строка шестнадцатеричным числом
-int  bin_to_dec(char str[]);	//Если строка является шестнадцатричным числом, возвращает его десятичное значение
+int  hex_to_dec(char str[]);	//Если строка является шестнадцатричным числом, возвращает его десятичное значение
 
 void main()
 {
@@ -60,20 +60,28 @@ void main()
 	//cout << to_int_number(sz_str);
 	
 	//Двоичная система
-	cout << "Введите число: ";
+	//cout << "Введите число: ";
+	//SetConsoleCP(1251);
+	//cin.getline(sz_str, n);
+	//SetConsoleCP(866);
+	//cout << "Число двоичное: "<< is_bin_number(sz_str) << endl;
+	//cout << "Десятичная система: "<< bin_to_dec(sz_str) << endl;
+
+	//Шестнадцатричная система
+	//cout << "Введите число: ";
+	//SetConsoleCP(1251);
+	//cin.getline(sz_str, n);
+	//SetConsoleCP(866);
+	//cout << "Число шестнадцатричное: " << is_hex_number(sz_str) << endl;
+	//cout << "Десятичная система: " << hex_to_dec(sz_str) << endl;
+
+	//Shrink
+	/*cout << "Введите текст: ";
 	SetConsoleCP(1251);
 	cin.getline(sz_str, n);
 	SetConsoleCP(866);
-	cout << is_bin_number(sz_str) << endl;
-	cout << "Десятичная система: "<< bin_to_dec(sz_str) << endl;
-	
+	shrink(sz_str, n);*/
 }	
-int StrLen(char str[])
-{
-	int i = 0;
-	for (; str[i]; i++);
-	return i;
-}
 void to_upper(char str[])
 {
 	for (int i = 0; str[i]; i++)
@@ -90,7 +98,25 @@ void to_lower(char str[])
 		if (str[i] >= 'А' && str[i] <= 'Я') str[i] += ' ';
 	}
 }
+void shrink(char str[], const int n)
+{
+	string buffer;
+	for (int i = 0; i < strlen(str); i++)
+	{
+		if (str[i] != ' ')
+		{
+			buffer += str[i];
+		}
+	}
+	cout << "Текст без пробелов: " << buffer << endl;
+}
 
+int StrLen(char str[])
+{
+	int i = 0;
+	for (; str[i]; i++);
+	return i;
+}
 bool is_palindrome(char str[], const int n)
 {
 	bool is_palindrom = true;
@@ -136,9 +162,39 @@ bool is_bin_number(char str[])
 int bin_to_dec(char str[])
 {
 	int buffer = 0;
-	for (int i = strlen(str) - 1; i > -1; i--)
+	if (is_bin_number(str))
 	{
-		if (str[i] == '1') buffer += pow(2, strlen(str) - (i + 1));
+		for (int i = strlen(str) - 1; i > -1; i--)
+		{
+			if (str[i] == '1') buffer += pow(2, strlen(str) - (i + 1));
+		}
+	}
+	return buffer;
+}
+bool is_hex_number(char str[])
+{
+	for (int i = 0; i < strlen(str); i++)
+	{
+		if (!((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'A' && str[i] <= 'F') || (str[i] >= 'a' && str[i] <= 'f'))) return false;
+	}
+	return true;
+}
+int CharToInt(char str)
+{
+	if (str >= '0' && str <= '9')
+		return str - '0';
+	else if (str >= 'A' && str <= 'F')
+		return str - 'A' + 10;
+	else if (str >= 'a' && str <= 'f')
+		return str - 'a' + 10;
+	return 0;
+}
+int hex_to_dec(char str[])
+{
+	int buffer = 0;
+	for (int j = 0, i = strlen(str) - 1; j < strlen(str); j++, i--)
+	{
+		buffer += CharToInt(str[j]) * pow(16, i);
 	}
 	return buffer;
 }
